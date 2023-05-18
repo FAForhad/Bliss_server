@@ -46,7 +46,7 @@ async function run() {
           category: req.query.category,
         };
       }
-      const result = await productCollection.find(quary).toArray();
+      const result = await productCollection.find(quary).sort({ time: -1 }).toArray();
       res.send(result);
 
       console.log(result);
@@ -59,9 +59,10 @@ async function run() {
           category: req.query.category,
         };
       }
-      const result = await productCollection.find(quary).toArray();
+      const result = await productCollection.find(quary).sort({ time: -1 }).toArray();
       res.send(result);
     });
+
     app.delete("/allproduct/:id", async (req, res) => {
       const id = req.params.id;
       console.log(id);
@@ -69,6 +70,13 @@ async function run() {
       const result = await productCollection.deleteOne(query);
       res.send(result);
     });
+
+    app.post("/allproducts", async (req, res) => {
+      const product = req.body;
+      const result = await productCollection.insertOne(product);
+      res.send(result);
+    });
+
     // USER COLLECTION
 
     app.post("/users", async (req, res) => {
