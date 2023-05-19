@@ -79,6 +79,22 @@ async function run() {
 
     // USER COLLECTION
 
+    app.get('/admin/allusres/:email', async (req, res) => {
+      const email = req.params.email
+      const query = { email }
+      const result = await usersCollection.findOne(query)
+      res.send(result);
+      console.log(result);
+  })
+
+  app.get('/users/:email', async (req, res) => {
+    const email = req.params.email
+    const query = { email }
+    const result = await usersCollection.findOne(query)
+    res.send(result);
+    console.log(result);
+})
+
     app.post("/users", async (req, res) => {
       const query = req.body;
       const result = await usersCollection.insertOne(query);
