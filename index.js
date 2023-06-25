@@ -22,6 +22,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     const productCollection = client.db("bliss").collection("products");
+    const orderCollection = client.db("bliss").collection("orders");
     const usersCollection = client.db("bliss").collection("users");
 
     // product collection
@@ -85,15 +86,15 @@ async function run() {
       const result = await usersCollection.findOne(query)
       res.send(result);
       console.log(result);
-  })
+    })
 
-  app.get('/users/:email', async (req, res) => {
-    const email = req.params.email
-    const query = { email }
-    const result = await usersCollection.findOne(query)
-    res.send(result);
-    console.log(result);
-})
+    app.get('/users/:email', async (req, res) => {
+      const email = req.params.email
+      const query = { email }
+      const result = await usersCollection.findOne(query)
+      res.send(result);
+      console.log(result);
+    })
 
     app.post("/users", async (req, res) => {
       const query = req.body;
@@ -129,8 +130,32 @@ async function run() {
       const result = await usersCollection.deleteOne(query);
       res.send(result);
     });
-    //
-    //
+
+
+    // ORDERS COLLECTIONS
+
+    app.post("/order", async (req, res) => {
+      const product = req.body;
+      const result = await orderCollection.insertOne(product);
+      res.send(result);
+    });
+
+    app.get("/orders", async (req, res) => {
+      const query = {};
+      const cursor = orderCollection.find(query).sort({ time: -1 });
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
+
+    app.get("/orders/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await orderCollection.findOne(query);
+      res.send(result);
+    });
+
+
     //
   } finally {
   }
