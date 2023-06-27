@@ -41,27 +41,40 @@ async function run() {
     });
 
     app.get("/productWomen", async (req, res) => {
-      let quary = {};
-      if (req.query.category === "women") {
-        quary = {
-          category: req.query.category,
+      const categories = req.query.category;
+
+      let query = {};
+      if (categories && Array.isArray(categories)) {
+        query = {
+          category: { $in: categories },
+        };
+      } else if (categories) {
+        query = {
+          category: categories,
         };
       }
-      const result = await productCollection.find(quary).sort({ time: -1 }).toArray();
-      res.send(result);
 
+      const result = await productCollection.find(query).sort({ time: -1 }).toArray();
+      res.send(result);
       console.log(result);
     });
-
     app.get("/productMen", async (req, res) => {
-      let quary = {};
-      if (req.query.category === "men") {
-        quary = {
-          category: req.query.category,
+      const categories = req.query.category;
+
+      let query = {};
+      if (categories && Array.isArray(categories)) {
+        query = {
+          category: { $in: categories },
+        };
+      } else if (categories) {
+        query = {
+          category: categories,
         };
       }
-      const result = await productCollection.find(quary).sort({ time: -1 }).toArray();
+
+      const result = await productCollection.find(query).sort({ time: -1 }).toArray();
       res.send(result);
+      console.log(result);
     });
 
     app.delete("/allproduct/:id", async (req, res) => {
