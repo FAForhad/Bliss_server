@@ -175,6 +175,22 @@ async function run() {
       res.send(result);
     });
 
+    app.put("/delivered/:id", async (req, res) => {
+      const id = req.params.id;
+      const status = req.body.status;
+      const tnx = req.body.tnx;
+      const query = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const updatedDoc = {
+        $set: {
+          isDeliverd: status,
+          tnxId: tnx,
+        },
+      };
+      const result = await orderCollection.updateOne(query, updatedDoc, options);
+      res.send(result);
+    });
+
 
     //
   } finally {
