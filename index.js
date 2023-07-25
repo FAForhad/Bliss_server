@@ -136,6 +136,20 @@ async function run() {
       res.send(result);
     });
 
+    app.put("/removeTopSell/:id", async (req, res) => {
+      const id = req.params.id;
+      const status = req.body.status;
+      const query = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const updatedDoc = {
+        $set: {
+          isTopSell: status,
+        },
+      };
+      const result = await productCollection.updateOne(query, updatedDoc, options);
+      res.send(result);
+    });
+
     // USER COLLECTION
 
     app.get('/admin/allusres/:email', async (req, res) => {
