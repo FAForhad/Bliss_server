@@ -2,12 +2,15 @@ const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const express = require("express");
 const cors = require("cors");
 const app = express();
+const bodyParser = require('body-parser');
+const axios = require('axios');
 // const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const port = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(express.json());
+app.use(bodyParser.json());
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.mxnk8qu.mongodb.net/?retryWrites=true&w=majority`;
 
@@ -88,6 +91,21 @@ async function run() {
     app.post("/allproducts", async (req, res) => {
       const product = req.body;
       const result = await productCollection.insertOne(product);
+      res.send(result);
+    });
+
+
+    app.put("/topSell/:id", async (req, res) => {
+      const id = req.params.id;
+      const status = req.body.status;
+      const query = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const updatedDoc = {
+        $set: {
+          isTopSell: status,
+        },
+      };
+      const result = await productCollection.updateOne(query, updatedDoc, options);
       res.send(result);
     });
 
@@ -190,9 +208,6 @@ async function run() {
       const result = await orderCollection.updateOne(query, updatedDoc, options);
       res.send(result);
     });
-
-
-    //
   } finally {
   }
 }
