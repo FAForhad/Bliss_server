@@ -118,6 +118,25 @@ async function run() {
     });
 
 
+    app.get("/topSell", async (req, res) => {
+      const isTopSell = req.query.isTopSell;
+
+      // Check if the isTopSell parameter is explicitly set to "true"
+      if (isTopSell === "1") {
+        const query = {
+          isTopSell: true,
+        };
+
+        const result = await productCollection.find(query).sort({ time: -1 }).toArray();
+        res.send(result);
+        console.log(result);
+      } else {
+        // If category is not set to "true", return an empty response
+        res.send([]);
+      }
+    });
+
+
     app.put("/advertiseProduct/:id", async (req, res) => {
       const id = req.params.id;
       const status = req.body.status;
