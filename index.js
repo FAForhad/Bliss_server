@@ -61,6 +61,8 @@ async function run() {
       res.send(result);
       console.log(result);
     });
+
+
     app.get("/productMen", async (req, res) => {
       const categories = req.query.category;
 
@@ -80,6 +82,7 @@ async function run() {
       console.log(result);
     });
 
+
     app.delete("/allproduct/:id", async (req, res) => {
       const id = req.params.id;
       console.log(id);
@@ -93,6 +96,27 @@ async function run() {
       const result = await productCollection.insertOne(product);
       res.send(result);
     });
+
+
+
+    app.get("/advertiseProducts", async (req, res) => {
+      const isAdvertised = req.query.isAdvertised;
+
+      // Check if the isAdvertised parameter is explicitly set to "true"
+      if (isAdvertised === "1") {
+        const query = {
+          isAdvertised: true,
+        };
+
+        const result = await productCollection.find(query).sort({ time: -1 }).toArray();
+        res.send(result);
+        console.log(result);
+      } else {
+        // If category is not set to "true", return an empty response
+        res.send([]);
+      }
+    });
+
 
     app.put("/advertiseProduct/:id", async (req, res) => {
       const id = req.params.id;
